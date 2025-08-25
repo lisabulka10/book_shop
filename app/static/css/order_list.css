@@ -1,0 +1,40 @@
+.table-row {
+    cursor: pointer;
+}
+
+.books-wrapper .book-cover {
+    max-width: 120px;
+    width: 100%;
+}
+
+.order-structure .book-covers {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    box-sizing: border-box;
+    overflow-x: auto;
+    width: 100%;
+    list-style: none;
+}
+
+.order-structure .book-covers li {
+    box-sizing: border-box;
+    flex-shrink: 0;
+    height: 95px;
+    position: relative;
+    width: 80px;
+    padding-left: 2.5px;
+    padding-right: 2.5px;
+}
+
+.order-structure .book-covers .cover .img {
+    display: block;
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+}
+
+.order-structure .book-covers .cover {
+    height: 100%;
+    width: 100%;
+}

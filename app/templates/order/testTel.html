@@ -1,0 +1,25 @@
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Выбрать</th>
+                <th>Название книги</th>
+                <th>Количество</th>
+                <th>Цена</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item_form in form.items %}
+            <tr>
+                <td>{{ item_form.selected() }}</td>
+                <td>{{ get_book(item_form.book_id.data).title }}</td>
+                <td>{{ item_form.count.data }}</td>
+                <td>{{ get_book(item_form.book_id.data).price * int(item_form.count.data) }} ₽</td>
+                {{ item_form.book_id() }}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {{ form.submit(class="btn btn-primary") }}
+</form>

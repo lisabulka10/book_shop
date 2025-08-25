@@ -1,0 +1,29 @@
+#map {
+    width: 60%;
+    height: 400px;
+    margin-top: 10px;
+}
+
+input {
+    width: 300px;
+    padding: 8px;
+    margin: 5px 0;
+}
+
+.suggestions {
+    max-height: 150px;
+    overflow-y: auto;
+    background: #fff;
+    position: absolute;
+    z-index: 1000;
+    width: 300px;
+}
+
+.suggestion-item {
+    padding: 5px;
+    cursor: pointer;
+}
+
+.suggestion-item:hover {
+    background: #eee;
+}

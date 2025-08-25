@@ -1,0 +1,77 @@
+{% extends '/main/base.html' %}
+{% block linkhead %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/map.css') }}">
+<script src="https://api-maps.yandex.ru/2.1/?apikey=7ff1b857-b188-4ad1-a480-fa50d9b6de8c&lang=ru_RU" type="text/javascript"></script>
+{% endblock %}
+{% block title %}Доставка{% endblock %}
+
+{% block catalog %} {% endblock %}
+
+{% block content %}
+<a href="{{url_for('order.create_order')}}" class="back col-6 text-decoration-none link-dark">
+    <h3><i class="bi bi-chevron-compact-left"></i> К оформлению</h3>
+</a>
+<div class="row d-flex flex-row gx-5 justify-content-center">
+    <div class="card col-4 px-0">
+        <div class="card-header">
+             <h3>Доставка</h3>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+            {{ form.hidden_tag() }}
+                <div class="my-3 p-2">
+                    {{ form.delivery_type.label(class='form-label') }}
+                    {{ form.delivery_type(class='form-select') }}
+                </div>
+                <div class="my-3 p-2">
+                    {{ form.country.label(class='form-label') }}
+                    {{ form.country(class='form-select') }}
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                            <div class="alert alert-{{category}}">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                </div>
+                <div class="form-floating mb-3 p-2" id="courier_city">
+                    {{ form.city.label() }}
+                    {{ form.city(class='form-control', id='city') }}
+                    <div id="city-suggestions" class="suggestions"></div>
+                    {% for error in form.city.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="form-floating mb-3 p-2" id="courier_address">
+                    {{ form.address.label() }}
+                    {{ form.address(class='form-control', id='address', placeholder='Начните вводить адрес...') }}
+                    <div id="address-suggestions" class="suggestions"></div>
+                    {% for error in form.address.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="mb-3 p-2" id="pickup_city">
+                    {{ form.city_shop.label(class='form-label') }}
+                    {{ form.city_shop(class='form-select', id='city_shop_select') }}
+                </div>
+                <div class="mb-3 p-2" id="pickup_shop">
+                    {{ form.shops.label(class='form-label') }}
+                    {{ form.shops(class='form-select', id='shops_select') }}
+                    {% for error in form.shops.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.accept(class='btn btn-primary', id='accept') }}
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="map" class="col-8"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/map.js') }}" ></script>
+{% endblock %}

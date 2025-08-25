@@ -1,0 +1,90 @@
+{% extends '/main/base.html' %}
+{% block title %}Корзина{% endblock %}
+
+{% block catalog %}{% endblock%}
+
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row align-items-center">
+        <div class="basket col-lg-8 mb-4">
+            <h1 class="mb-4">Корзина</h1>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                {% if cart_items | length %}
+                <div>
+                    <input type="checkbox" id="selectAll" class="form-check-input me-2 item-checkbox">
+                    <label for="selectAll">Выбрать все</label>
+                </div>
+                <a href="{{ url_for('cart.delete') }}" class="btn btn-danger btn-sm" id="basketDelete" data-id="{{ current_user.user_id }}">
+                    Очистить корзину
+                    <i class="bi bi-cart-x"></i>
+                </a>
+                {% else %}
+                <h3>Пока пуста...</h3>
+                <a href="{{ url_for('main.index') }}">Пора срочно исправлять</a>
+                {% endif %}
+            </div>
+
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <tbody>
+                    {% for item in cart_items %}
+                        <tr class="cart-item">
+                            <td>
+                                <input type="checkbox" class="form-check-input" name="selected-items" value="{{ item.id }}">
+                            </td>
+                            <td onclick="window.location.href='{{ url_for('main.book', book_id=item.book.id) }}'" class="pointer">
+                                <img src="{{ url_for('static', filename=item.book.book_cover) }}" alt="book" style="height: 60px; width: 40px; object-fit: cover;">
+                            </td>
+                            <td> {{ item.book.title }}</td>
+                            <td class="text-center">
+                                <div class="d-inline-flex align-items-center">
+                                    <button class="btn btn-outline-secondary qty-btn minus">-</button>
+                                    <input type="text" value="{{item.count}}" class="form-control form-control-sm mx-2 text-center qty" style="width: 50px;">
+                                    <button class="btn btn-outline-secondary qty-btn plus">+</button>
+                                </div>
+                            </td>
+                            <td class="text-end price">{{ item.book.price }} ₽</td>
+                            <td class="text-end row-total">
+                                <strong>{{ item.count * item.book.price }} ₽</strong>
+                            </td>
+                            <td>
+                                <a href="{{ url_for('cart.delete_item', item_id=item.id) }}" class="btn btn-danger btn-sm" id="itemDelete" data-id="{{ item.id }}">
+                                    <i class="bi bi-cart-x"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="total col-lg-4 right-block">
+            <div class="card summary-box shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Итого</h5>
+                    <ul class="list-group mb-3">
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Выбрано:</span>
+                            <strong id="itemCount">0</strong>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>Сумма:</span>
+                            <strong id="totalPrice">0 ₽</strong>
+                        </li>
+                    </ul>
+                    <button class="btn btn-primary w-100" id="checkoutBtn" disabled>
+                        <a class="text-decoration-none link-light" href="{{url_for('order.create_order')}}">Оформить заказ</a>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/libs/bootstrap.min.js') }}" ></script>
+    <script src="{{ url_for('static', filename='js/cart.js') }}"></script>
+{% endblock %}

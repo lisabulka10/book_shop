@@ -1,0 +1,234 @@
+{% extends '/main/base.html' %}
+{% block linkhead %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/order.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.css"/>
+<style>
+  .iti__flag {background-image: url("https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/img/flags.png");}
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .iti__flag {background-image: url("https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/img/flags@2x.png");}
+  }
+</style>
+
+{% endblock %}
+{% block title %}Оформление заказа{% endblock %}
+
+{% block catalog %}{% endblock%}
+
+{% block content %}
+<div class="row justify-content-between align-items-center mb-4 ms-3">
+    <a href="{{url_for('order.cart')}}" class="back col-6 text-decoration-none link-dark">
+        <h3><i class="bi bi-chevron-compact-left"></i> Корзина</h3>
+    </a>
+</div>
+<form method="post" id="checkoutForm" action="{{url_for('order.create_order')}}">
+    {{ form.hidden_tag() }}
+
+<div class="d-flex flex-row justify-content-center align-items-center gap-5">
+    <div class="delivery-info d-flex flex-column col-6">
+        <div class="addresses-info d-flex flex-column card gap-5 mb-4 p-3">
+            <div class="row justify-content-between align-items-center">
+                <h3 class="col-4">Доставка</h3>
+                <a href="{{url_for('order.get_address')}}" class="new-address col-3 text-decoration-none link-dark">
+                <i class="bi bi-plus-square"></i> Новый адрес
+            </a>
+            </div>
+            <div class="address-wrapper d-flex flex-row gap-3 mb-2 p-3 position-relative">
+                <button class="btn btn-light carousel-btn-prev" type="button" data-bs-target="#carouselDelivery" data-bs-slide="prev">
+                    <i class="bi bi-chevron-left"></i>
+                </button>
+                <div id="carouselDelivery" class="carousel slide flex-grow-1">
+                    <div class="carousel-inner">
+                        {% if user_addresses %}
+                        {% for i in range(0, user_addresses|length, 3) %}
+                        <div class="carousel-item {% if loop.first %}active{% endif %} d-flex flex-row gap-3 mb-4 p-3 ">
+                            {% for address in user_addresses[i:i+3] %}
+                            <div class="card delivery-card">
+                                <div class="card-header delivery-type d-flex justify-content-between">
+                                    {% if address.shop %}
+                                    {{ DeliveryType.PICKUP.value }}
+                                    {% else %}
+                                    {{ DeliveryType.COURIER.value }}
+                                    {% endif %}
+                                    <div class="form-check form-switch form-check-reverse">
+                                        <input type="radio"
+                                               name="{{ form.address.name }}"
+                                               value="{{ address.address_id }}"
+                                               data-type = "{% if address.shop %}{{ DeliveryType.PICKUP.value }}{%else%}{{ DeliveryType.COURIER.value }}{%endif%}"
+                                               class="mb-2 form-check-input delivery-radio">
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="city">{{address.address.city}}</div>
+                                    <div class="address">{{address.address.street}}, {{address.address.house}}{{address.address.building}}</div>
+                                    <div class="price text-end mt-3">0 ₽</div>
+                                </div>
+                                <div class="card-footer text-center">
+                                    <a href="{{ url_for('order.delete_address', address_id=address.address_id) }}" class="btn btn-secondary">
+                                        <i class="bi bi-x-square"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <h2 class="text-center">Добавьте адрес для доставки</h2>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <button class="btn btn-light carousel-btn-next" type="button" data-bs-target="#carouselDelivery" data-bs-slide="next">
+                    <i class="bi bi-chevron-right"></i>
+                </button>
+            </div>
+
+            <div class="details">
+                <h6>Детали доставки</h6>
+            <div class="row">
+                <div class="form-floating mb-3 col-3 p-2">
+                    {{ form.office.label() }}
+                    {{ form.office(class="form-control", id="office-input", placeholder="№ кв./оф.") }}
+                </div>
+                <div class="form-floating mb-3 col-3 p-2">
+                    {{ form.entrance.label() }}
+                    {{ form.entrance(class="form-control", id="entrance-input", placeholder="Подъезд") }}
+                </div>
+                <div class="form-floating mb-3 col-3 p-2">
+                    {{ form.intercom.label() }}
+                    {{ form.intercom(class="form-control", id="intercom-input", placeholder="Домофон") }}
+                </div>
+                <div class="form-floating mb-3 col-3 p-2">
+                    {{ form.floor.label() }}
+                    {{ form.floor(class="form-control", id="floor-input", placeholder="Этаж") }}
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div class="recipient-block card d-flex flex-column mb-4 p-3">
+            <h3>Получатель</h3>
+            <div class="row align-items-center ms-1">
+                <!--<div class="form-floating col-2 mb-3 p-2">
+                    <select class="form-select" id="country-select">
+                        <option value="+7" data-mask="(000) 000-00-00" selected>🇷🇺(+7)</option>
+                        <option value="+7" data-mask="(000) 000-00-00">🇰🇿(+7)</option>
+                        <option value="+375" data-mask="(00) 000-00-00">🇧🇾(+375)</option>
+                    </select>
+                    <label for="country-select">Код</label>
+                </div>
+           -->
+               <!-- <div class="form-floating col-5 mb-3 p-2">
+                    {{ form.phone.label() }}
+                    {{ form.phone(class="form-control col-4 col-sm-3", id="phone-input", placeholder="Номер телефона") }} 
+                    </div>-->
+                <div class="col-5 mb-3 p-2">
+                    <label for="phone">Телефон</label>
+                    <input id="phone" type="tel" name="phone" class="form-control col-4 col-sm-3">
+                </div>
+
+            </div>
+
+            <div class="row align-items-center ms-1">
+                <div class="form-floating col-6 p-2">
+                    {{ form.first_name.label() }}
+                    {{ form.first_name(class="form-control", id="firstname-input", placeholder="Имя") }}
+                </div>
+                <div class="form-floating col-6 p-2">
+                    {{ form.last_name.label() }}
+                    {{ form.last_name(class="form-control", id="lastname-input", placeholder="Фамилия") }}
+                </div>
+            </div>
+
+        </div>
+
+        <div class="payment-methods card d-flex flex-column mb-4 p-3">
+            <h3>Оплата</h3>
+            <div class="pay-wrapper d-flex flex-row gap-3">
+                <div class="pay-method card p-3">
+                    <div class="form-check form-switch form-check-reverse">
+                        <input type="radio"
+                               name="{{ form.pay_method.name }}"
+                               value="{{ PayMethod.SBP.name }}"
+                               class="mb-2 form-check-input">
+                    </div>
+                    <div class="name">{{ PayMethod.SBP.value }}</div>
+                    <div class="info">Оплатить через систему быстрых платежей сейчас</div>
+                </div>
+                <div class="pay-method card p-3">
+                    <div class="form-check form-switch form-check-reverse">
+                        <input type="radio"
+                               name="{{ form.pay_method.name }}"
+                               value="{{ PayMethod.CARD.name }}"
+                               class="mb-2 form-check-input">
+                    </div>
+                    <div class="name">{{ PayMethod.CARD.value }}</div>
+                    <div class="info">Оплатить картой онлайн сейчас</div>
+                </div>
+                <div class="pay-method card p-3">
+                    <div class="form-check form-switch form-check-reverse">
+                        <input type="radio"
+                               name="{{ form.pay_method.name }}"
+                               value="{{ PayMethod.RECEIPT.name }}" checked
+                               class="mb-2 form-check-input">
+                    </div>
+                    <div class="name">{{ PayMethod.RECEIPT.value }}</div>
+                    <div class="info">Оплатить картой или наличными при получении</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="order-sum d-flex flex-column col-4 right-block">
+        <div class="card summary-box shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Итого: {{count_items}} товаров</h5>
+                <div class="table">
+                    <table class="table align-middle">
+                        <tbody>
+                            <tr>
+                                <td class="text-start">Цена</td>
+                                <td class="text-end">{{amount}}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-start">Доставка</td>
+                                <td class="text-end">0 ₽</td>
+                            </tr>
+                            <tr>
+                                <td class="text-start">Способ оплаты:</td>
+                                <td class="text-end" id="pay_method_summary"></td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td class="text-start">Итого:</td>
+                                <td class="text-end">{{amount}}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                {% for category, message in get_flashed_messages(with_categories=true) if category and message %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+
+                <div class="mb-3">
+                    {{ form.accept(class='btn btn-primary w-100', id='checkoutBtn') }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/libs/jquery-3.7.1.js') }}" ></script>
+<script src="{{ url_for('static', filename='js/libs/jquery.mask.min.js') }}" ></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js"></script>
+<script src="{{ url_for('static', filename='js/phone.js') }}"></script>
+<script src="{{ url_for('static', filename='js/order.js') }}"></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+-->
+
+{% endblock %}

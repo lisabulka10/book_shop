@@ -1,0 +1,89 @@
+{% extends '/main/base.html' %}
+
+{% block linkhead %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+{% endblock %}
+{% block title %}{{book.author.name}}: {{book.title}}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <a href="{{url_for('main.index')}}" class="back col-6 text-decoration-none link-dark mt-4">
+        <h3><i class="bi bi-chevron-compact-left"></i> На главную</h3>
+    </a>
+    <div class="book-info d-flex flex-column gap-4 mt-5">
+        <h3>{{book.author.name}}: {{book.title}}</h3>
+        <div class="row book-info-wrapper gap-3">
+            <div class="left-block d-flex flex-column col-7 gap-4">
+                <div class="row main-info block-info">
+                    <div class="col-4 mb-3">
+                        <img src="{{ url_for('static', filename=book.book_cover) }}" alt="обложка книги" class="book-img-main">
+                    </div>
+                    <div class="col-2"></div>
+                    <div class="col-6 d-flex flex-column">
+                        <div class="review-block mb-3">Рецензии</div>
+                        <h5 class="title my-3">
+                            {{book.title}}
+                        </h5>
+                        <div class="properties d-flex flex-column gap-3">
+                            <div class="row my-3">
+                                <div class="col-6 text-start">
+                                    Автор:
+                                </div>
+                                <div class="col-6 text-end">
+                                    {{ book.author.name }}
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-6 text-start">
+                                    Издательство:
+                                </div>
+                                <div class="col-6 text-end">
+                                    {{ book.publishing }}
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-6 text-start">
+                                    Год издания:
+                                </div>
+                                <div class="col-6 text-end">
+                                    {{ book.year }}
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-6 text-start">
+                                    Обложка:
+                                </div>
+                                <div class="col-6 text-end">
+                                    {{ book.binding }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="description d-flex flex-column my-3 gap-3 block-info">
+                    <h5>Аннотация</h5>
+                    <div class="description-text">
+                        {{ book.description }}
+                    </div>
+                </div>
+                <div class="d-flex flex-column my-3 gap-3 block-info">
+                    <div class="d-flex flex-row justify-content-between">
+                        <h5>Рецензии на книгу</h5>
+                        <button class="btn btn-secondary"><i class="bi bi-plus-square"></i> Добавить рецензию</button>
+                    </div>
+                    <div class="description-text">
+                        Этот блок разрабатывается
+                    </div>
+                </div>
+            </div>
+            <div class="right-block col-4">
+                <div class="info d-flex flex-column block-info">
+                    <div class="price text-center">{{ book.price }} ₽</div>
+                    <button class="btn btn-sm btn-primary add-to-cart" data-id="{{ book.id }}"><i class="bi bi-cart-plus"></i> В корзину</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

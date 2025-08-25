@@ -1,0 +1,51 @@
+
+<div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start bg-light p-4">
+    <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+        <img src="{{ url_for('static', filename='img/book.svg') }}" alt="logo">
+    </a>
+    <ul class="nav col-12 col-lg-auto me-lg-3 mb-2 justify-content-center mb-md-0">
+
+        <li>
+            <a href="#" class="nav-link px-2 text-secondary">Home</a>
+        </li>
+        <li>
+            <a href="#" class="nav-link px-2 text-black">Features</a>
+        </li>
+        <li>
+            <a href="#" class="nav-link px-2 text-black">FAQs</a>
+        </li>
+        <li>
+            <a href="#" class="nav-link px-2 text-black">About</a>
+        </li>
+    </ul>
+    <form class="d-flex flex-grow-1 mb-3 mb-lg-0 me-lg-3" role="search">
+        <input type="search" class="form-control form-control-dark text-bg-light me-2" placeholder="Поиск..." aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Поиск<i class="bi bi-search"></i></button>
+    </form>
+
+    <div class="text-end">
+        {% if current_user.is_authenticated %}
+        <div class="d-flex gap-4 justify-content-center align-items-center">
+            <span class="mr-3">Добро пожаловать, {{ current_user.first_name }}</span>
+            <a href="{{ url_for('order.get_order_list') }}" type="button" class="btn btn-secondary">Заказы <i class="bi bi-bag"></i></a>
+        {% endif %}
+            <a href="{{ url_for('cart.cart') }}" type="button" class="btn btn-secondary">Корзина
+                <span id="cart-count">
+                    {% if cart_count %}
+                    {{ cart_count }}
+                    {% else %}
+                    <i class="bi bi-cart"></i>
+                    {% endif %}
+                </span></a>
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('user.logout') }}" type="button" class="btn btn-warning">Выйти <i class="bi bi-box-arrow-in-left"></i></a>
+        </div>
+
+
+        {% else %}
+        <a href="{{ url_for('user.login') }}" type="button" class="btn btn-outline-primary me-2">Войти <i class="bi bi-person-fill"></i></a>
+        <a href="{{ url_for('user.register') }}" class="btn btn-warning">Регистрация <i class="bi bi-person-plus"></i></a>
+        {% endif %}
+
+    </div>
+</div>
