@@ -1,7 +1,7 @@
 import json
 from app.database import session_scope
 from app.models.book import Section, Genre, Book, Author
-from app.schemas.book import SectionPydantic, GenrePydantic, BookPydantic, AuthorPydantic
+from app.schemas.book import SectionPydantic, GenrePydantic, BookPydanticDB, AuthorPydantic
 from app.schemas.address import AddressPydantic, ShopPydanticCreate
 from app.models.address import Address, Shop
 from pydantic import ValidationError
@@ -62,6 +62,7 @@ def load_data(DbModel, PydanticModel, file_name):
 
 #python -m app.load_json
 #load_data(Author, AuthorPydantic, 'author.json')
-#load_data(Book, BookPydantic, 'book.json')
+#load_data(Book, BookPydanticDB, 'book.json')
 #load_data(Address, AddressPydantic, 'shop_addresses.json')
-load_data(Shop, ShopPydanticCreate, 'shops.json')
+#load_data(Shop, ShopPydanticCreate, 'shops.json')
+

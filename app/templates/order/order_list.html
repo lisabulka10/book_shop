@@ -14,10 +14,10 @@
         <h3 class="mb-4">Заказы</h3>
         <div class="orders-wrapper">
             {% for order in orders %}
-            <div class="row mt-3 pointer border border-secondary-subtle rounded-4 p-3 align-items-center" id="orderRow" onclick="window.location.href='{{ url_for('order.order', order_id=order.id) }}'">
+            <div class="row mt-3 pointer border border-secondary-subtle rounded-4 p-3 align-items-center bg-light" id="orderRow" onclick="window.location.href='{{ url_for('order.order', order_id=order.id) }}'">
                 <div class="col-2">
                     <div class="order-column">
-                        <span class="badge text-bg-primary">{{ order.status.value }}</span>
+                        <span class="badge text-bg-primary p-3">{{ order.status.value }}</span>
                     </div>
                 </div>
                 <div class="col-2">

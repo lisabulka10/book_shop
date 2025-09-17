@@ -1,3 +1,39 @@
+@font-face {
+    font-family: 'Font';
+    src: url('{{ url_for('static', filename='fonts/Jost-Italic-VariableFont_wght.ttf') }}') format('woff2'),
+         url('{{ url_for('static', filename='fonts/Jost-VariableFont_wght.ttf') }}') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+    font-family: 'Font'
+}
+
+.catalog-title {
+    font-size: 26px;
+    font-weight: 600;
+}
+
+.section-catalog {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.genre-catalog {
+    font-size: 18px;
+    font-weight: 400;
+}
+
+.genre-all {
+    font-size: 19px;
+    font-weight: 500;
+}
+
+.catalog-list {
+
+}
+
 .header {
     left: 0;
     position: fixed;
@@ -5,6 +41,20 @@
     top: 0;
     z-index: 997;
     height: 50px;
+    background-color: black;
+    color: white;
+}
+
+.header-div {
+    font-size: 20px;
+}
+
+header .btn {
+    font-size: 18px;
+}
+
+#search {
+    background-color: lightgray;
 }
 
 .page {
@@ -17,10 +67,11 @@
 
 
 .card.book {
-    width: 20rem;
+    width: 25rem;
     height: 100%;
     display: flex;
     flex-direction: column;
+    overflow-x: auto;
 
 }
 
@@ -42,7 +93,7 @@
 
 
 body {
-    background: #f8f9fa;
+    background-color: rgba(181, 181, 181, 0.27);;
 }
 
 .content {
@@ -57,7 +108,7 @@ footer {
 }
 
 .catalog {
-    max-width: 350px;
+    max-width: 370px;
     width: 100%;
 }
 
@@ -84,34 +135,126 @@ footer {
     width: 100%;
 }
 
-/* Контейнер-ряд (флекс) не растягивает колонки по высоте */
-.book-info-wrapper {
-    display: flex;           /* переопределяем row */
-    gap: 1rem;               /* вместо bootstrap-gap */
-    align-items: flex-start;
-    overflow: visible;
-    margin: 0;               /* убираем bootstrap отрицательные margin */
+.book-title {
+   font-size: 34px;
 }
 
+.book-info-wrapper {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    overflow: visible;
+    margin: 0;
+}
 
-/* Липкой делаем именно колонку */
+.review-block {
+    font-size: 20px;
+}
+
+.properties {
+    font-size: 18px;
+    font-weight: 300;
+}
+
+.column-name {
+    font-size: 17px;
+    color: rgb(86, 86, 86);
+}
+
+.description-text {
+    font-size: 18px;
+    color: rgb(86, 86, 86);
+}
+
+.add-review {
+    font-size: 17px;
+}
+
+.delete-review {
+    font-size: 14px;
+}
+
+.review {
+    background-color: rgba(181, 181, 181, 0.15);
+}
+
+td.book-title {
+    font-size: 16px;
+}
+
 .right-block {
     position: sticky;
     top: 100px;
-    align-self: flex-start;   /* на случай особенностей флекса */
+    align-self: flex-start;
     height: auto;
 }
 
-/* Внутренний блок — обычный, без sticky */
+
 .right-block .info {
     position: static;
     gap: 50px;
     padding: 25px;
 }
 
-/* Просто на всякий случай — никакой фиксированной высоты */
+.row-total {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.book-title {
+    font-size: 24px;
+}
+
+.summary-amount{
+    font-size: 20px;
+}
+
 .block-info {
     background-color: white;
     padding: 20px;
 }
+
+
 .book-info-wrapper .price { font-size: 30px; }
+
+
+
+.star {
+    font-size: 2rem;
+    cursor: pointer;
+    color: lightgray;
+}
+.star.active {
+    color: gold;
+}
+
+.star-container {
+      flex: 0 0 auto;
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 3.5em;
+      height: 3.5em;
+      color: gold;
+      margin-right: 15px;
+}
+.star-rate{
+    line-height: 1;
+    font-size: 4em;
+}
+.number {
+    position: absolute;
+    font-size: 1.2em;
+    color: rgb(71, 71, 71);
+    font-weight: bold;
+    pointer-events: none;
+}
+
+.book-rating {
+    font-size: 22px;
+    font-weight: 600;
+}
+
+
+

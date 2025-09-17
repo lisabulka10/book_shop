@@ -145,18 +145,17 @@ document.addEventListener('DOMContentLoaded', function () {
     cityShopSelect.addEventListener('change', handleCityChange);
 
 
-
-
-    // --- Обработка выбора типа доставки ---
     deliveryTypeSelect.addEventListener('change', function () {
         const cityInput = document.querySelector('#city')
         const addressInput = document.querySelector('#address')
         if (this.value.toLowerCase() === "pickup") {
             courierCity.style.display = 'none';
             cityInput.required = false;
+            cityInput.innerHTML = '';
 
             courierAddress.style.display = 'none';
             addressInput.required = false;
+            addressInput.innerHTML = '';
 
             pickupCity.style.display = 'block';
             pickupShop.style.display = 'block';
@@ -184,7 +183,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
-    // --- Обработка ввода города ---
     cityInput.addEventListener('input', function() {
         citySelected = false;
         addressSelected = false;
@@ -208,50 +206,49 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-  // --- Обработка ввода адреса ---
-  addressInput.addEventListener('input', function() {
-    addressSelected = false;
-    updateAcceptState();
-    clearContainer('address-suggestions');
-    const val = this.value;
-    if (val.length > 1) {
-      getSuggestions(val, "address", function(suggestions) {
-        renderSuggestions("address-suggestions", suggestions, function(item) {
-          addressInput.value = item.value;
-          clearContainer('address-suggestions');
-          const fullAddress = selectedCity ? (selectedCity + ", " + item.value) : item.value;
-          geocodeAddress(fullAddress, 14);
-          const hasHouseNumber = /\d/.test(item.value);
-          if (citySelected && hasHouseNumber) {
-            addressSelected = true;
-          } else {
-            addressSelected = false;
-          }
-          updateAcceptState();
-        });
-      });
-    }
-  });
 
-  // --- Проверка при отправке формы ---
-  const form = acceptButton.closest('form');
-  if (form) {
-    form.addEventListener('submit', function(e) {
-      if (!(citySelected && addressSelected)) {
-        e.preventDefault();
-        alert('Пожалуйста, выберите адрес из подсказок с номером дома.');
-      }
+    addressInput.addEventListener('input', function() {
+        addressSelected = false;
+        updateAcceptState();
+        clearContainer('address-suggestions');
+        const val = this.value;
+        if (val.length > 1) {
+            getSuggestions(val, "address", function(suggestions) {
+                renderSuggestions("address-suggestions", suggestions, function(item) {
+                    addressInput.value = item.value;
+                    clearContainer('address-suggestions');
+                    const fullAddress = selectedCity ? (selectedCity + ", " + item.value) : item.value;
+                    geocodeAddress(fullAddress, 14);
+                    const hasHouseNumber = /\d/.test(item.value);
+                    if (citySelected && hasHouseNumber) {
+                        addressSelected = true;
+                    } else {
+                        addressSelected = false;
+                    }
+                    updateAcceptState();
+                });
+            });
+        }
     });
-  }
 
-  // --- Закрытие подсказок при клике мимо ---
-  document.addEventListener('click', function(e) {
-    if (!e.target.closest('#city-suggestions') && e.target !== cityInput) {
-      clearContainer('city-suggestions');
-    }
-    if (!e.target.closest('#address-suggestions') && e.target !== addressInput) {
-      clearContainer('address-suggestions');
-    }
-  });
 
+    const form = acceptButton.closest('form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+        if (!(citySelected && addressSelected)) {
+            e.preventDefault();
+            alert('Пожалуйста, выберите адрес из подсказок с номером дома.');
+        }
+        });
+    }
+
+
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('#city-suggestions') && e.target !== cityInput) {
+            clearContainer('city-suggestions');
+        }
+        if (!e.target.closest('#address-suggestions') && e.target !== addressInput) {
+            clearContainer('address-suggestions');
+        }
+    });
 });

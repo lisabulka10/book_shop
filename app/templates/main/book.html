@@ -1,4 +1,4 @@
-{% extends '/main/base.html' %}
+{% extends 'main/base.html' %}
 
 {% block linkhead %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
@@ -11,49 +11,56 @@
         <h3><i class="bi bi-chevron-compact-left"></i> На главную</h3>
     </a>
     <div class="book-info d-flex flex-column gap-4 mt-5">
-        <h3>{{book.author.name}}: {{book.title}}</h3>
+        <h3 class="book-title bg-light p-3 rounded-3 border border-2">{{book.author.name}}: {{book.title}}</h3>
         <div class="row book-info-wrapper gap-3">
             <div class="left-block d-flex flex-column col-7 gap-4">
                 <div class="row main-info block-info">
                     <div class="col-4 mb-3">
                         <img src="{{ url_for('static', filename=book.book_cover) }}" alt="обложка книги" class="book-img-main">
                     </div>
-                    <div class="col-2"></div>
-                    <div class="col-6 d-flex flex-column">
-                        <div class="review-block mb-3">Рецензии</div>
+                    <div class="col-1"></div>
+                    <div class="col-7 d-flex flex-column">
+                        <div class="review-block mb-3 d-flex flex-row justify-content-between align-items-center ">
+                            <a href="#reviews" class="link-dark link-underline-opacity-0"><h5>Рецензии</h5></a>
+                            <div class="book-rating">
+                                {% if rating %} {{rating}} {% endif%}
+                                <span class="star {% if rating %}active{% endif%}">★</span>
+                            </div>
+
+                        </div>
                         <h5 class="title my-3">
                             {{book.title}}
                         </h5>
                         <div class="properties d-flex flex-column gap-3">
                             <div class="row my-3">
-                                <div class="col-6 text-start">
+                                <div class="col-4 text-start column-name">
                                     Автор:
                                 </div>
-                                <div class="col-6 text-end">
+                                <div class="col-8 text-end">
                                     {{ book.author.name }}
                                 </div>
                             </div>
                             <div class="row mb-3">
-                                <div class="col-6 text-start">
+                                <div class="col-4 text-start column-name">
                                     Издательство:
                                 </div>
-                                <div class="col-6 text-end">
+                                <div class="col-8 text-end">
                                     {{ book.publishing }}
                                 </div>
                             </div>
                             <div class="row mb-3">
-                                <div class="col-6 text-start">
+                                <div class="col-4 text-start column-name">
                                     Год издания:
                                 </div>
-                                <div class="col-6 text-end">
+                                <div class="col-8 text-end">
                                     {{ book.year }}
                                 </div>
                             </div>
                             <div class="row mb-3">
-                                <div class="col-6 text-start">
+                                <div class="col-4 text-start column-name">
                                     Обложка:
                                 </div>
-                                <div class="col-6 text-end">
+                                <div class="col-8 text-end">
                                     {{ book.binding }}
                                 </div>
                             </div>
@@ -61,18 +68,42 @@
                     </div>
                 </div>
                 <div class="description d-flex flex-column my-3 gap-3 block-info">
-                    <h5>Аннотация</h5>
+                    <h3>Аннотация</h3>
                     <div class="description-text">
                         {{ book.description }}
                     </div>
                 </div>
                 <div class="d-flex flex-column my-3 gap-3 block-info">
-                    <div class="d-flex flex-row justify-content-between">
-                        <h5>Рецензии на книгу</h5>
-                        <button class="btn btn-secondary"><i class="bi bi-plus-square"></i> Добавить рецензию</button>
+                    <div class="d-flex flex-row justify-content-between" id="reviews">
+                        <h3>Рецензии</h3>
+                        {% if current_user.is_authenticated %}
+                        <button type="button" class="btn btn-secondary add-review" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            <i class="bi bi-plus-square"></i> Добавить рецензию
+                        </button>
+                        {% endif %}
                     </div>
-                    <div class="description-text">
-                        Этот блок разрабатывается
+                    <div class="review-wrapper d-flex flex-column my-5 gap-3 p-3">
+                        {% for review in book.reviews %}
+                        {% if review.text %}
+                        <div class="border rounded d-flex flex-column gap-3 p-2 review">
+                            <div class="d-flex flex-row justify-content-between">
+                                <div class="user-name">{{ review.user_review.user.first_name }} {{ review.user_review.user.last_name[0] }}.</div>
+                                {% if current_user.user_id == review.user_review.user.user_id %}
+                                <a class="btn btn-danger delete-review" href="{{url_for('main.delete_review', book_id=book.id, review_id=review.id) }}"><i class="bi bi-trash3-fill"></i> Удалить</a>
+                                {% endif %}
+                            </div>
+                            <div class="d-flex flex-row gap-2">
+                                <div class="star-container">
+                                    <span class="star-rate">&starf;</span>
+                                    <span class="number">{{ review.rate }}</span>
+                                </div>
+                                <div class="review-text">
+                                    {{ review.text }}
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
                     </div>
                 </div>
             </div>
@@ -84,6 +115,50 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fs-5" id="exampleModalLabel">Добавить рецензию</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="review-modal" data-book="{{ book.id }}">
+                    <textarea class="form-control mb-3" aria-label="Напишите рецензию тут" id="review-textarea"></textarea>
+                    <div class="stars d-flex flex-column">
+                        <h6 class="mb-2">Ваша оценка ⭐️</h6>
+                        <div class="rating">
+                            <div class="name-est"></div>
+                            <div id="rating" data-selected="0">
+                                <span class="star" data-value="1">★</span>
+                                <span class="star" data-value="2">★</span>
+                                <span class="star" data-value="3">★</span>
+                                <span class="star" data-value="4">★</span>
+                                <span class="star" data-value="5">★</span>
+                                <span class="star" data-value="6">★</span>
+                                <span class="star" data-value="7">★</span>
+                                <span class="star" data-value="8">★</span>
+                                <span class="star" data-value="9">★</span>
+                                <span class="star" data-value="10">★</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-primary" id="review-button">Отправить рецензию</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </div>
+
+
+{% endblock %}
+
+{% block scripts %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/script.js') }}" ></script>
+<script src="{{ url_for('static', filename='js/rating.js') }}" ></script>
 {% endblock %}

@@ -1,5 +1,5 @@
-from pydantic import BaseModel, field_validator, ConfigDict
-from typing import List
+from pydantic import BaseModel
+
 
 class UserPydantic(BaseModel):
     user_id: int

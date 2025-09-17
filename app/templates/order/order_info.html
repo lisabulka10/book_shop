@@ -13,43 +13,44 @@
     <div class="d-flex flex-column gap-3 mt-5 p-3">
         <h1 class="order-id">Заказ №{{ order.id }}</h1>
         <div class="order-info card">
-            <h3 class="card-header order-info-title">Информация о заказе</h3>
+            <h3 class="card-header order-info-title bg-dark text-white">Информация о заказе</h3>
             <div class="card-body order-info-text">
                 <div class="row justify-content-between">
-                    <p class="left col-4">Дата</p>
-                    <p class="right col-4 text-end">{{order.date}}</p>
+                    <p class="column-name left col-4">Дата</p>
+                    <p class="order-data right col-4 text-end">{{order.date}}</p>
                 </div>
                 <div class="row justify-content-between">
-                    <p class="left col-4">Способ доставки</p>
-                    <p class="right col-4 text-end">{{order.delivery.delivery_type.value}}</p>
+                    <p class=" column-name left col-4">Способ доставки</p>
+                    <p class=" order-data right col-4 text-end">{{order.delivery.delivery_type.value}}</p>
                 </div>
                 <div class="row justify-content-between">
-                    <p class="left col-4">Способ оплаты</p>
-                    <p class="right col-4 text-end">{{order.pay_method.value}}</p>
+                    <p class="column-name left col-4">Способ оплаты</p>
+                    <p class="order-data right col-4 text-end">{{order.pay_method.value}}</p>
                 </div>
                 <div class="row justify-content-between">
-                    <p class="left col-4">Адрес доставки</p>
-                    <p class="right col-4 text-end">{{order.delivery.address.city}}, {{order.delivery.address.street}}, {{order.delivery.address.house}}</p>
+                    <p class="column-name left col-4">Адрес доставки</p>
+                    <p class="order-data right col-4 text-end">{{order.delivery.address.city}}, {{order.delivery.address.street}}, {{order.delivery.address.house}}</p>
                 </div>
             </div>
         </div>
     </div>
-    <div class="structure d-flex flex-column gap-3 mt-5 p-3">
-        <h3 class="row">Состав заказа:</h3>
-        <div class="books-wrapper d-flex flex-column gap-3">
+    <div class="structure d-flex flex-column gap-3 mt-5 p-3 card">
+        <h3 class="card-header bg-dark text-white p-3">Состав заказа:</h3>
+        <div class="books-wrapper d-flex flex-column gap-3 card-body">
             {% for item in order.order_items %}
             <div class="row">
                 <div class="col-2 pointer" onclick="window.location.href='{{ url_for('main.book', book_id=item.book.id) }}'">
                     <img src="{{ url_for('static', filename=item.book.book_cover) }}" class="book-cover">
                 </div>
                 <div class="col-5">
-                    <div class="book-info d-flex flex-column gap-1">
+                    <div class="book-info d-flex flex-column gap-1 order-data">
                         <div class="author">{{ item.book.author.name}}</div>
                         <div class="book-title">{{ item.book.title }}</div>
                     </div>
                 </div>
-                <div class="col-2">{{item.count}}</div>
-                <div class="col-2">{{item.book.price}} ₽</div>
+                <div class="col-2 order-data">{{item.count}}</div>
+                <div class="col-2 amount">{{item.book.price}} ₽</div>
+                <span class="border-bottom"></span>
             </div>
             {% endfor %}
         </div>

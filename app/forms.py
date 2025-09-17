@@ -3,7 +3,7 @@ from flask import request
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, IntegerField, ValidationError, HiddenField, BooleanField, Form
 from wtforms import FieldList, FormField, SelectField, SubmitField, RadioField
-from wtforms.validators import InputRequired, Length, Email, EqualTo, DataRequired
+from wtforms.validators import InputRequired, Length, Email, EqualTo, DataRequired, NumberRange
 
 from enum import Enum
 
@@ -44,6 +44,12 @@ class RegistrationForm(FlaskForm):
         except phonenumbers.NumberParseException:
             raise ValidationError("Некорректный номер телефона")
 
+
+class VerifyForm(FlaskForm):
+    code = IntegerField('Код', validators=[InputRequired(), NumberRange(min=1000, max=9999)])
+    submit = SubmitField('Зарегистрироваться')
+
+
 class Country(Enum):
     RU = "Россия"
     KZ = 'Казахстан'
@@ -60,7 +66,7 @@ class AddressFrom(FlaskForm):
     city = StringField('Населенный пункт', validators=[Length(max=200)])
     address = StringField('Адрес')
     city_shop = SelectField('Город', choices=[])
-    shops = SelectField('Пункт самовывоза', choices=[(0, '- Выберите магазин - ')], coerce=int, validate_choice=True,
+    shops = SelectField('Пункт самовывоза', choices=[(0, '- Выберите магазин - ')], coerce=int, validate_choice=False,
                         default=0)
     accept = SubmitField('Далее')
 
@@ -111,27 +117,20 @@ class OrderInfoForm(FlaskForm):
         except phonenumbers.NumberParseException:
             raise ValidationError("Некорректный номер телефона")
 
-    #def validate_phone(self, phone):
-        # берём код страны из поля формы
-    #    country_code = self.country_code.data or ''
-    #    phone_digits = re.sub(r'\D', '', phone.data)  # оставляем только цифры
-    #    full_number = f"{country_code}{phone_digits}"
-    #    print("Full number to validate:", full_number)
-
-    #    try:
-     #       parsed = phonenumbers.parse(full_number, None)
-      #      if not phonenumbers.is_valid_number(parsed):
-      #          raise ValueError
-      #  except Exception:
-      #      raise ValidationError('Некорректный номер телефона')
-
 
 class CartItemForm(FlaskForm):
     book_id = HiddenField()
     selected = BooleanField()
     count = HiddenField()
 
+    class Meta:
+        csrf = False  # y
 
 class CartForm(FlaskForm):
     items = FieldList(FormField(CartItemForm))
     submit = SubmitField('Оформить заказ')
+
+
+class SearchForm(FlaskForm):
+    searched = StringField('Поиск', validators=[DataRequired()])
+    submit = SubmitField('Искать')

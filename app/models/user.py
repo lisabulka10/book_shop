@@ -1,7 +1,7 @@
 
 from flask_login import UserMixin
 
-from sqlalchemy import Integer, String, Column
+from sqlalchemy import Integer, String, Column, Boolean
 from sqlalchemy.orm import relationship
 
 from . import Base
@@ -16,6 +16,7 @@ class User(Base, UserMixin):
     email = Column(String(length=120), unique=True)
     phone = Column(String, nullable=False)
     password_hash = Column(String(length=256))
+    is_verified = Column(Boolean, default=False)
 
     user_review = relationship('UserReview', back_populates='user', cascade="all, delete")
     orders = relationship('Order', back_populates='user', cascade="all, delete")

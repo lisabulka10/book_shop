@@ -38,3 +38,21 @@
     height: 100%;
     width: 100%;
 }
+
+.badge {
+    font-size: 16px;
+}
+
+.amount {
+     font-size: 20px;
+     font-weight: 600;
+}
+
+.order-column {
+    font-size: 18px;
+}
+
+.order-data {
+    font-size: 18px;
+    font-weight: 500;
+}

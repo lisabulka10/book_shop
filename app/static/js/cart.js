@@ -7,39 +7,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const cartCount = document.getElementById("cart-count");
 
     const selectAll = document.getElementById("selectAll");
-    const checkboxes = document.querySelectorAll("input[name='selected-items']");
+    const checkboxes = document.querySelectorAll(".item-checkbox");
 
     checkboxes.forEach(ch => ch.checked = true);
     if (selectAll) selectAll.checked = true;
-
-
-    //cartCount.textContent = "";
-
-    /*const deleteBtn = document.getElementById("basketDelete");
-    const cartCount = document.getElementById("cart-count");
-    const elementsToHide = document.getElementById("manageLine")
-
-    deleteBtn.addEventListener("click", async () => {
-        const userId = deleteBtn.dataset.id;
-
-        const response = await fetch("/api/cart/delete", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ user_id: userId })
-        });
-
-        const data = await response.json();
-        if (response.ok) {
-            cartCount.textContent = data.cart_count;
-            document.querySelectorAll(".cart-item").forEach(el => {
-                el.remove()
-            });
-        } else {
-            alert(data.error || "Ошибка добавления");
-        }
-    });*/
 
     function getNumberFromText(text) {
         return parseFloat(text.replace(/[^\d.]/g, "")) || 0;
@@ -49,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let total = 0;
         let count = 0;
         document.querySelectorAll("tbody tr").forEach(row => {
-            const checkbox = row.querySelector("input[name='selected-items']");
+            const checkbox = row.querySelector(".item-checkbox");
             if (checkbox && checkbox.checked) {
                 const qty = parseInt(row.querySelector(".qty").value) || 0;
                 const price = getNumberFromText(row.querySelector(".price")?.textContent || "0");
@@ -60,7 +31,47 @@ document.addEventListener("DOMContentLoaded", () => {
         totalPriceElement.textContent = `${total} ₽`;
         itemCountElement.textContent = count;
         checkoutBtn.disabled = count === 0;
+    };
+
+    async function updateCount(row, qty) {
+        const itemId = row.dataset.id;
+        await fetch("/cart/update-count", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-Token": window.csrfToken || ""
+            },
+            body: JSON.stringify({
+                id: itemId,
+                count: qty
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log("Количество обновлено:", data);
+        })
+        .catch(err => console.error("Ошибка при обновлении количества:", err));
+        updateSummary();
     }
+
+    async function updateSelected(row) {
+        const itemId = row.dataset.id;
+        await fetch("/cart/update-selected", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-Token": window.csrfToken || ""
+            },
+            body: JSON.stringify({
+                id: itemId,
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log("Статус обновлен:", data);
+        })
+        .catch(err => console.error("Ошибка при обновлении статуса:", err));
+    };
 
     table.addEventListener("click", (e) => {
         if (e.target.classList.contains("plus") || e.target.classList.contains("minus")) {
@@ -78,10 +89,11 @@ document.addEventListener("DOMContentLoaded", () => {
             if (totalCell) {
                 totalCell.textContent = `${price * qty} ₽`;
             }
-
+            updateCount(row, qty)
             updateSummary();
         }
     });
+
 
     table.addEventListener("input", (e) => {
         if (e.target.classList.contains("qty")) {
@@ -95,10 +107,10 @@ document.addEventListener("DOMContentLoaded", () => {
             if (totalCell) {
                 totalCell.textContent = `${price * qty} ₽`;
             }
-
-            updateSummary();
+            updateCount(row, qty)
         }
     });
+
 
     if (selectAll) {
         selectAll.addEventListener("change", () => {
@@ -108,7 +120,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     checkboxes.forEach(ch => {
-        ch.addEventListener("change", updateSummary);
+        ch.addEventListener("change", (e) => {
+            updateSummary();
+            const row = e.target.closest("tr");
+            if (!row) {
+                console.error("Не найден <tr> для чекбокса", e.target);
+                return;
+            }
+            updateSelected(row);
+
+            });
     });
 
     updateSummary();

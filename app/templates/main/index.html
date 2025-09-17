@@ -3,11 +3,11 @@
 
 {% block content %}
 <div class="flex-grow-1 p-4">
-    <div class="card">
-        <div class="card-header mb-3"><h1>Топ продаж</h1></div>
-         <div class="d-flex gap-3 justify-content-center">
+    <div class="card mb-4">
+        <div class="card-header bg-dark text-light mb-3"><h1>Топ продаж</h1></div>
+         <div class="d-flex gap-3 justify-content-center mb-4">
              {% for book in top_book %}
-             <div class="card book border-0" style="width: 12rem;">
+             <div class="card book border-0" style="width: 16rem;">
                  <div class="pointer d-flex flex-column gap-3" onclick="window.location.href='{{ url_for('main.book', book_id=book.id) }}'">
                      <img src="{{ url_for('static', filename=book.book_cover) }}" class="card-img-top" alt="книга">
                      <div class="card-body text-center">
@@ -22,9 +22,11 @@
     </div>
     {% for item in sections_with_books %}
     <div class="card mb-4">
-        <div class="card-header">
-            <h2>{{ item.section.name }}</h2>
-        </div>
+        <a href="{{ url_for('main.section_book', section_id=item.section.id) }}" class="link-dark link-underline-opacity-0 ">
+            <div class="card-header bg-dark text-light">
+                <h2>{{ item.section.name }}</h2>
+            </div>
+        </a>
         <div class="card-body">
             <div id="carousel-{{ loop.index }}" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">

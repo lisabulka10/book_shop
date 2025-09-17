@@ -1,0 +1,22 @@
+{% extends '/main/base.html' %}
+{% block title %}Главная страница{% endblock %}
+
+{% block content %}
+<div class="card">
+        <div class="card-header mb-3 bg-dark text-white"><h1>Поиск</h1></div>
+         <div class="d-flex gap-3 justify-content-center mb-4 flex-wrap">
+             {% for book in books %}
+             <div class="card book border-0" style="width: 12rem;">
+                 <div class="pointer d-flex flex-column gap-3" onclick="window.location.href='{{ url_for('main.book', book_id=book.id) }}'">
+                     <img src="{{ url_for('static', filename=book.book_cover) }}" class="card-img-top" alt="книга">
+                     <div class="card-body text-center">
+                         <p class="text-start">{{ book.price }} ₽</p>
+                         <h6 class="card-title">{{ book.title }}</h6>
+                     </div>
+                 </div>
+                 <button class="btn btn-sm btn-primary add-to-cart" data-id="{{ book.id }}">В корзину</button>
+             </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

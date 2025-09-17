@@ -1,5 +1,5 @@
 from _datetime import datetime
-from pydantic import BaseModel, field_validator, ConfigDict
+from pydantic import BaseModel
 from typing import List, Optional
 
 from .book import BookPydantic

@@ -1,5 +1,5 @@
 from . import Base
-from sqlalchemy import Integer, String, Column, ForeignKey, Enum, Date, Float
+from sqlalchemy import Integer, String, Column, ForeignKey, Enum, Date, Float, Boolean
 from sqlalchemy.orm import relationship
 
 from enum import Enum as EnumClass
@@ -32,7 +32,7 @@ class Order(Base):
     pay_method = Column(Enum(PayMethod))
     amount = Column(Float)
 
-    user = relationship('User', back_populates='orders', uselist=False)
+    user = relationship('User', back_populates='orders', uselist=False, cascade="save-update")
     order_items = relationship('OrderItem', back_populates='order', cascade="all, delete")
     delivery = relationship('Delivery', back_populates='order', cascade="all, delete", uselist=False)
 
@@ -69,6 +69,7 @@ class CartItem(Base):
     cart_id = Column(Integer, ForeignKey('carts.id'))
     book_id = Column(Integer, ForeignKey('books.id'))
     count = Column(Integer)
+    selected = Column(Boolean, default=False)
 
     book = relationship('Book', back_populates='cart_items', uselist=False)
     cart = relationship('Cart', back_populates='cart_items', uselist=False)

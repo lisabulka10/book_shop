@@ -16,7 +16,7 @@
 
 {% block content %}
 <div class="row justify-content-between align-items-center mb-4 ms-3">
-    <a href="{{url_for('order.cart')}}" class="back col-6 text-decoration-none link-dark">
+    <a href="{{url_for('cart.cart')}}" class="back col-6 text-decoration-none link-dark">
         <h3><i class="bi bi-chevron-compact-left"></i> Корзина</h3>
     </a>
 </div>
@@ -33,76 +33,62 @@
             </a>
             </div>
             <div class="address-wrapper d-flex flex-row gap-3 mb-2 p-3 position-relative">
-                <button class="btn btn-light carousel-btn-prev" type="button" data-bs-target="#carouselDelivery" data-bs-slide="prev">
-                    <i class="bi bi-chevron-left"></i>
-                </button>
-                <div id="carouselDelivery" class="carousel slide flex-grow-1">
-                    <div class="carousel-inner">
-                        {% if user_addresses %}
-                        {% for i in range(0, user_addresses|length, 3) %}
-                        <div class="carousel-item {% if loop.first %}active{% endif %} d-flex flex-row gap-3 mb-4 p-3 ">
-                            {% for address in user_addresses[i:i+3] %}
-                            <div class="card delivery-card">
-                                <div class="card-header delivery-type d-flex justify-content-between">
-                                    {% if address.shop %}
-                                    {{ DeliveryType.PICKUP.value }}
-                                    {% else %}
-                                    {{ DeliveryType.COURIER.value }}
-                                    {% endif %}
-                                    <div class="form-check form-switch form-check-reverse">
-                                        <input type="radio"
-                                               name="{{ form.address.name }}"
-                                               value="{{ address.address_id }}"
-                                               data-type = "{% if address.shop %}{{ DeliveryType.PICKUP.value }}{%else%}{{ DeliveryType.COURIER.value }}{%endif%}"
-                                               class="mb-2 form-check-input delivery-radio">
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <div class="city">{{address.address.city}}</div>
-                                    <div class="address">{{address.address.street}}, {{address.address.house}}{{address.address.building}}</div>
-                                    <div class="price text-end mt-3">0 ₽</div>
-                                </div>
-                                <div class="card-footer text-center">
-                                    <a href="{{ url_for('order.delete_address', address_id=address.address_id) }}" class="btn btn-secondary">
-                                        <i class="bi bi-x-square"></i>
-                                    </a>
-                                </div>
-                            </div>
-                            {% endfor %}
-                        </div>
-                        {% endfor %}
+                {% if user_addresses %}
+                {% for address in user_addresses %}
+                <div class="card delivery-card">
+                    <div class="card-header delivery-type d-flex justify-content-between">
+                        {% if address.shop %}
+                        {{ DeliveryType.PICKUP.value }}
                         {% else %}
-                        <h2 class="text-center">Добавьте адрес для доставки</h2>
+                        {{ DeliveryType.COURIER.value }}
                         {% endif %}
+                        <div class="form-check form-switch form-check-reverse">
+                            <input type="radio"
+                                   name="{{ form.address.name }}"
+                                   value="{{ address.address_id }}"
+                                   data-type = "{% if address.shop %}{{ DeliveryType.PICKUP.value }}{%else%}{{ DeliveryType.COURIER.value }}{%endif%}"
+                                   class="mb-2 form-check-input delivery-radio">
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="city">{{address.address.city}}</div>
+                        <div class="address">{{address.address.street}}, {{address.address.house}}{{address.address.building}}</div>
+                        <div class="price text-end mt-3">0 ₽</div>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="{{ url_for('order.delete_address', address_id=address.address_id) }}" class="btn btn-secondary">
+                            <i class="bi bi-x-square"></i>
+                        </a>
                     </div>
                 </div>
-
-                <button class="btn btn-light carousel-btn-next" type="button" data-bs-target="#carouselDelivery" data-bs-slide="next">
-                    <i class="bi bi-chevron-right"></i>
-                </button>
+                {% endfor %}
+                {% else %}
+                <h2 class="text-center">Добавьте адрес для доставки</h2>
+                {% endif %}
             </div>
-
+            {% if user_addresses %}
             <div class="details">
                 <h6>Детали доставки</h6>
-            <div class="row">
-                <div class="form-floating mb-3 col-3 p-2">
-                    {{ form.office.label() }}
-                    {{ form.office(class="form-control", id="office-input", placeholder="№ кв./оф.") }}
-                </div>
-                <div class="form-floating mb-3 col-3 p-2">
-                    {{ form.entrance.label() }}
-                    {{ form.entrance(class="form-control", id="entrance-input", placeholder="Подъезд") }}
-                </div>
-                <div class="form-floating mb-3 col-3 p-2">
-                    {{ form.intercom.label() }}
-                    {{ form.intercom(class="form-control", id="intercom-input", placeholder="Домофон") }}
-                </div>
-                <div class="form-floating mb-3 col-3 p-2">
-                    {{ form.floor.label() }}
-                    {{ form.floor(class="form-control", id="floor-input", placeholder="Этаж") }}
+                <div class="row">
+                    <div class="form-floating mb-3 col-3 p-2" id="office">
+                        {{ form.office.label() }}
+                        {{ form.office(class="form-control", id="office-input", placeholder="№ кв./оф.") }}
+                    </div>
+                    <div class="form-floating mb-3 col-3 p-2" id="entrance">
+                        {{ form.entrance.label() }}
+                        {{ form.entrance(class="form-control", id="entrance-input", placeholder="Подъезд") }}
+                    </div>
+                    <div class="form-floating mb-3 col-3 p-2" id="intercom">
+                        {{ form.intercom.label() }}
+                        {{ form.intercom(class="form-control", id="intercom-input", placeholder="Домофон") }}
+                    </div>
+                    <div class="form-floating mb-3 col-3 p-2" id="floor">
+                        {{ form.floor.label() }}
+                        {{ form.floor(class="form-control", id="floor-input", placeholder="Этаж") }}
+                    </div>
                 </div>
             </div>
-            </div>
+            {% endif %}
         </div>
 
         <div class="recipient-block card d-flex flex-column mb-4 p-3">

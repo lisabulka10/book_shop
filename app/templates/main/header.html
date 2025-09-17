@@ -1,32 +1,37 @@
 
-<div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start bg-light p-4">
+<div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start bg-dark p-4 header-div">
     <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
         <img src="{{ url_for('static', filename='img/book.svg') }}" alt="logo">
     </a>
     <ul class="nav col-12 col-lg-auto me-lg-3 mb-2 justify-content-center mb-md-0">
 
         <li>
-            <a href="#" class="nav-link px-2 text-secondary">Home</a>
+            <a href="/" class="nav-link px-2 text-light">Главная</a>
         </li>
         <li>
-            <a href="#" class="nav-link px-2 text-black">Features</a>
+            <a href="#" class="nav-link px-2 text-light">FAQs</a>
         </li>
         <li>
-            <a href="#" class="nav-link px-2 text-black">FAQs</a>
-        </li>
-        <li>
-            <a href="#" class="nav-link px-2 text-black">About</a>
+            <a href="#" class="nav-link px-2 text-light">О нас</a>
         </li>
     </ul>
-    <form class="d-flex flex-grow-1 mb-3 mb-lg-0 me-lg-3" role="search">
-        <input type="search" class="form-control form-control-dark text-bg-light me-2" placeholder="Поиск..." aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Поиск<i class="bi bi-search"></i></button>
+    <form class="d-flex flex-grow-1 mb-3 ms-4 mb-lg-0 me-lg-3" role="search" action="/search" method="get">
+        <input type="search" class="form-control form-control-dark text-bg-light me-2 autosubmit"
+               placeholder="Поиск..." aria-label="Search" id="search" name="searched">
+        <button class="btn btn-success" type="submit" name="submit">Поиск<i class="bi bi-search"></i></button>
     </form>
 
     <div class="text-end">
         {% if current_user.is_authenticated %}
         <div class="d-flex gap-4 justify-content-center align-items-center">
             <span class="mr-3">Добро пожаловать, {{ current_user.first_name }}</span>
+            {% if not current_user.is_verified %}
+            <a href="{{ url_for('user.user_verify') }}" class="btn btn-danger p-1" id="verifyBtn"
+                    data-bs-toggle="tooltip" data-bs-placement="bottom"
+                    data-bs-title="Вам необходимо подтвердить регистрацию">
+                <i class="bi bi-exclamation-square-fill"></i>
+            </a>
+            {% endif %}
             <a href="{{ url_for('order.get_order_list') }}" type="button" class="btn btn-secondary">Заказы <i class="bi bi-bag"></i></a>
         {% endif %}
             <a href="{{ url_for('cart.cart') }}" type="button" class="btn btn-secondary">Корзина

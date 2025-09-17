@@ -16,24 +16,27 @@
 <div class="page d-flex flex-row">
     {% block catalog %}
     <div class="catalog card">
-        <div class="card-header text-center">
-            <h4>Каталог</h4>
+        <div class="card-header text-center bg-dark text-light p-4 ">
+            <h4 class="catalog-title">Каталог</h4>
         </div>
         <div class="card-body">
-            <ul class="list-unstyled ps-0">
+            <ul class="list-unstyled ps-0 mt-5 catalog-list">
                 {% for section in catalog %}
-                <li class="mb-2 ">
-                    <a class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" href="#list{{section.id}}" role="button" aria-expanded="false" aria-controls="list{{section.id}}">
-                        <h6>{{ section.name }}</h6>
+                <li class="mb-4">
+                    <a class="btn btn-toggle align-items-center rounded collapsed p-3" data-bs-toggle="collapse" href="#list{{section.id}}" role="button" aria-expanded="false" aria-controls="list{{section.id}}">
+                        <h5 class="section-catalog">{{ section.name }}</h5>
                     </a>
                     <div class="collapse" id="list{{ section.id}}">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 ms-4 small">
                             {% for genre in section.genres %}
-                            <li class="mb-1">
-                                <a href="{{ url_for('main.genre_books', genre_id=genre.id) }}" class="link-dark link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover rounded">{{ genre.name }}</a>
+                            <li class="mb-3">
+                                <a href="{{ url_for('main.genre_books', genre_id=genre.id) }}" class="p-2 link-dark link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover rounded genre-catalog">{{ genre.name }}</a>
 
                             </li>
                             {% endfor %}
+                             <li class="mb-3">
+                                <a href="{{ url_for('main.section_book', section_id=section.id) }}" class="p-2 link-dark link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover rounded genre-all">Все книги категории</a>
+                            </li>
                         </ul>
                     </div>
                 </li>
@@ -52,7 +55,6 @@
 
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/libs/bootstrap.bundle.min.js') }}" ></script>
-<script src="{{ url_for('static', filename='js/libs/bootstrap.min.js') }}" ></script>
 <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 {% endblock %}
 

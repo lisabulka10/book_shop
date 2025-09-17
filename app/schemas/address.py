@@ -1,5 +1,5 @@
-from pydantic import BaseModel, field_validator, ConfigDict
-from typing import List, Optional
+from pydantic import BaseModel
+from typing import Optional
 
 from .user import UserPydantic
 

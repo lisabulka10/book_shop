@@ -1,0 +1,38 @@
+{% extends 'main/base.html' %}
+{% block linkhead %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.css"/>
+
+{% endblock %}
+{% block title %}Верификация{% endblock %}
+
+{% block catalog %}{% endblock%}
+
+{% block content %}
+    <div class="card col-6 p-3 text-secondary-emphasis bg-secondary-subtle border border-secondary-subtle rounded-3 container">
+        <input type="hidden" value="{{current_user.phone}}" id="phone">
+        <div class="card-header">
+            <h2 class="text-center mb-3">Верификация</h2>
+        </div>
+        <div class="card-body">
+            <button type="button" class="btn btn-primary col-12" id="getCode">Получить код</button>
+        </div>
+        <div id="verify-container" style="display: none;">
+            <form class="verify-form" action="{{url_for('main.index')}}">
+                <div class="form-floating mb-3 col-12 p-2">
+                    <label for="code">Код</label>
+                    <input type="text" id="code" class="form-control" placeholder="XXXX" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 mt-3" id="verifyBtn">Подтвердить</button>
+                <p id="message"></p>
+
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/libs/jquery-3.7.1.js') }}" ></script>
+<script src="{{ url_for('static', filename='js/libs/jquery.mask.min.js') }}" ></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js"></script>
+<script src="{{ url_for('static', filename='js/verify.js') }}"></script>
+{% endblock %}

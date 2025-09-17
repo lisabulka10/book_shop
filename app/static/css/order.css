@@ -1,6 +1,7 @@
 .delivery-card {
     max-width: 220px;
     width: 100%;
+    min-width: 180px;
 }
 
 .delivery-card .delivery-type {
@@ -17,5 +18,9 @@
 
 .delivery-card .price {
 
+}
+
+.address-wrapper {
+    overflow-x: auto;
 }
 
